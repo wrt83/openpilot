@@ -79,6 +79,8 @@ class Calibrator:
       except Exception:
         cloudlog.exception("Error reading cached CalibrationParams")
 
+    rpy_init = RPY_INIT
+    valid_blocks = 20
     self.reset(rpy_init, valid_blocks, wide_from_device_euler)
     self.update_status()
 
