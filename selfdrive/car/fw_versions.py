@@ -120,7 +120,7 @@ REQUESTS: List[Request] = [
   Request(
     "subaru",
     [TESTER_PRESENT_REQUEST, SUBARU_VERSION_REQUEST],
-    [TESTER_PRESENT_RESPONSE, SUBARU_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
   ),
   # Hyundai
   Request(
@@ -143,13 +143,13 @@ REQUESTS: List[Request] = [
   Request(
     "toyota",
     [SHORT_TESTER_PRESENT_REQUEST, TOYOTA_VERSION_REQUEST],
-    [SHORT_TESTER_PRESENT_RESPONSE, TOYOTA_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     bus=0,
   ),
   Request(
     "toyota",
     [SHORT_TESTER_PRESENT_REQUEST, OBD_VERSION_REQUEST],
-    [SHORT_TESTER_PRESENT_RESPONSE, OBD_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     bus=0,
   ),
   Request(
@@ -182,12 +182,12 @@ REQUESTS: List[Request] = [
   Request(
     "nissan",
     [NISSAN_DIAGNOSTIC_REQUEST_KWP, NISSAN_VERSION_REQUEST_KWP],
-    [NISSAN_DIAGNOSTIC_RESPONSE_KWP, NISSAN_VERSION_RESPONSE_KWP],
+    [b'\x10\xc3I\x04\x0c', b'!'],
   ),
   Request(
     "nissan",
     [NISSAN_DIAGNOSTIC_REQUEST_KWP, NISSAN_VERSION_REQUEST_KWP],
-    [NISSAN_DIAGNOSTIC_RESPONSE_KWP, NISSAN_VERSION_RESPONSE_KWP],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     rx_offset=NISSAN_RX_OFFSET,
   ),
   Request(
@@ -200,7 +200,7 @@ REQUESTS: List[Request] = [
   Request(
     "body",
     [TESTER_PRESENT_REQUEST, UDS_VERSION_REQUEST],
-    [TESTER_PRESENT_RESPONSE, UDS_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     bus=0,
   ),
   # Chrysler / FCA / Stellantis
@@ -219,13 +219,13 @@ REQUESTS: List[Request] = [
   Request(
     "ford",
     [TESTER_PRESENT_REQUEST, FORD_VERSION_REQUEST],
-    [TESTER_PRESENT_RESPONSE, FORD_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     whitelist_ecus=[Ecu.engine],
   ),
   Request(
     "ford",
     [TESTER_PRESENT_REQUEST, FORD_VERSION_REQUEST],
-    [TESTER_PRESENT_RESPONSE, FORD_VERSION_RESPONSE],
+    [b'\x10\xc3I\x04\x0c', b'!'],
     bus=0,
     whitelist_ecus=[Ecu.eps, Ecu.esp, Ecu.fwdRadar, Ecu.fwdCamera],
   ),
