@@ -112,7 +112,7 @@ class Request:
   response: List[bytes]
   whitelist_ecus: List[int] = field(default_factory=list)
   rx_offset: int = DEFAULT_RX_OFFSET
-  bus: int = 1
+  bus: int = 0
 
 
 REQUESTS: List[Request] = [
