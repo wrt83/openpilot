@@ -203,7 +203,7 @@ void UIState::updateStatus() {
     if (scene.started) {
       status = STATUS_DISENGAGED;
       scene.started_frame = sm->frame;
-      wide_camera = Params().getBool("WideCameraOnly");
+      wide_camera = true; //Params().getBool("WideCameraOnly");
     }
     started_prev = scene.started;
     emit offroadTransition(!scene.started);
@@ -226,7 +226,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
   });
 
   Params params;
-  wide_camera = params.getBool("WideCameraOnly");
+  wide_camera = true; //params.getBool("WideCameraOnly");
   prime_type = std::atoi(params.get("PrimeType").c_str());
   language = QString::fromStdString(params.get("LanguageSetting"));
 

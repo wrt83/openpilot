@@ -102,7 +102,7 @@ void OnroadWindow::offroadTransition(bool offroad) {
   alerts->updateAlert({}, bg);
 
   // update stream type
-  bool wide_cam = Params().getBool("WideCameraOnly");
+  bool wide_cam = true;//Params().getBool("WideCameraOnly");
   nvg->setStreamType(wide_cam ? VISION_STREAM_WIDE_ROAD : VISION_STREAM_ROAD);
 }
 
