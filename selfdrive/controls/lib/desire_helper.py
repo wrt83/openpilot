@@ -39,6 +39,7 @@ class DesireHelper:
     self.keep_pulse_timer = 0.0
     self.prev_one_blinker = False
     self.desire = log.LateralPlan.Desire.none
+    self.blinker = log.LateralPlan.Blinker.none
 
   def update(self, carstate, lateral_active, lane_change_prob):
     v_ego = carstate.vEgo
@@ -101,6 +102,8 @@ class DesireHelper:
     self.prev_one_blinker = one_blinker
 
     self.desire = DESIRES[self.lane_change_direction][self.lane_change_state]
+    # TODO use a dict
+    self.blinker = log.LateralPlan.Blinker.left if carstate.leftBlinker else log.LateralPlan.Blinker.right if carstate.rightBlinker else log.LateralPlan.Blinker.none
 
     # Send keep pulse once per second during LaneChangeStart.preLaneChange
     if self.lane_change_state in (LaneChangeState.off, LaneChangeState.laneChangeStarting):
