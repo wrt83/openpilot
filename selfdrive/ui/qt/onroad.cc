@@ -100,10 +100,6 @@ void OnroadWindow::offroadTransition(bool offroad) {
 #endif
 
   alerts->updateAlert({}, bg);
-
-  // update stream type
-  bool wide_cam = true;//Params().getBool("WideCameraOnly");
-  nvg->setStreamType(wide_cam ? VISION_STREAM_WIDE_ROAD : VISION_STREAM_ROAD);
 }
 
 void OnroadWindow::paintEvent(QPaintEvent *event) {
@@ -231,6 +227,9 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
     setProperty("dmActive", sm["driverMonitoringState"].getDriverMonitoringState().getIsActiveMode());
     setProperty("rightHandDM", sm["driverMonitoringState"].getDriverMonitoringState().getIsRHD());
   }
+    
+  this->setStreamType(s.scene.wide_cam ? VISION_STREAM_WIDE_ROAD : VISION_STREAM_ROAD);
+  CameraWidget::updateWideZoom(s.scene.zoom);
 
   if (s.scene.calibration_valid) {
     CameraWidget::updateCalibration(s.scene.view_from_calib);

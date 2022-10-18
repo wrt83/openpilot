@@ -86,6 +86,8 @@ const QColor bg_colors [] = {
 };
 
 typedef struct UIScene {
+  float zoom = 1.1;
+  bool wide_cam = false;
   bool calibration_valid = false;
   mat3 view_from_calib = DEFAULT_CALIBRATION;
   cereal::PandaState::PandaType pandaType;
@@ -130,7 +132,6 @@ public:
   QString language;
 
   QTransform car_space_transform;
-  bool wide_camera;
 
 signals:
   void uiUpdate(const UIState &s);
