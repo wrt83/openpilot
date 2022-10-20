@@ -24,7 +24,7 @@ TEST_ROUTE = "4cf7a6ad03080c90|2021-09-29--13-46-36"
 SEGMENT = 0
 MAX_FRAMES = 100 if PC else 1300
 
-SEND_EXTRA_INPUTS = bool(os.getenv("SEND_EXTRA_INPUTS", "0"))
+SEND_EXTRA_INPUTS = bool(os.getenv("SEND_EXTRA_INPUTS", "1"))
 
 VIPC_STREAM = {"roadCameraState": VisionStreamType.VISION_STREAM_ROAD, "driverCameraState": VisionStreamType.VISION_STREAM_DRIVER,
                "wideRoadCameraState": VisionStreamType.VISION_STREAM_WIDE_ROAD}
@@ -76,7 +76,7 @@ def model_replay(lr, frs):
     for msg in lr:
       msgs[msg.which()].append(msg)
 
-    for cam_msgs in zip_longest(msgs['roadCameraState'], msgs['wideRoadCameraState'], msgs['driverCameraState']):
+    for cam_msgs in zip_longest(msgs['roadCameraState'], msgs['wideRoadCameraState'], msgs['driverCameraState', msgs['lateralPlan']]):
       # need a pair of road/wide msgs
       if None in (cam_msgs[0], cam_msgs[1]):
         break
