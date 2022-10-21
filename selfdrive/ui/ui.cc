@@ -176,16 +176,11 @@ static void update_state(UIState *s) {
 
   if (sm.updated("carState")) {
     float v_ego = sm["carState"].getCarState().getVEgo();
-    // Zoom level dependent on speed
-    if (v_ego < 2) {
-      scene.zoom = 2.5;
-      scene.wide_cam = true;
-    } else if (v_ego < 15) {
-      scene.zoom = (2.5 + (v_ego - 2) * (4.67 - 2.5)/ (15 -2));
-      scene.wide_cam = true;
-    } else {
-      scene.zoom = 1.1;
+    // Wide or narrow cam dependent on speed
+    if (scene.wide_cam and speed > 15) {
       scene.wide_cam = false;
+    } else if (!scene.wide_cam and speed < 10) {
+      scene.wide_cam = true;
     }
   }
 }

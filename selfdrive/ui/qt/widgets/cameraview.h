@@ -48,7 +48,6 @@ protected:
   void mouseReleaseEvent(QMouseEvent *event) override { emit clicked(); }
   virtual void updateFrameMat();
   void updateCalibration(const mat3 &calib);
-  void updateWideZoom(float zoom);
   void vipcThread();
 
   bool zoomed_view;

@@ -180,7 +180,6 @@ void CameraWidget::hideEvent(QHideEvent *event) {
   }
 }
 
-
 void CameraWidget::updateFrameMat() {
   int w = width(), h = height();
 
@@ -189,6 +188,7 @@ void CameraWidget::updateFrameMat() {
       frame_mat = get_driver_view_transform(w, h, stream_width, stream_height);
     } else {
       intrinsic_matrix = (stream_type == VISION_STREAM_WIDE_ROAD) ? ecam_intrinsic_matrix : fcam_intrinsic_matrix;
+      zoom = (stream_type == VISION_STREAM_WIDE_ROAD) ? 2.5 : 1.1;
 
       // Project point at "infinity" to compute x and y offsets
       // to ensure this ends up in the middle of the screen
@@ -228,10 +228,6 @@ void CameraWidget::updateCalibration(const mat3 &calib) {
   calibration = calib;
   updateFrameMat();
 
-}
-
-void CameraWidget::updateWideZoom(float zoom_in) {
-  zoom = zoom_in;
 }
 
 void CameraWidget::paintGL() {
