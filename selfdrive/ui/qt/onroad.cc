@@ -229,7 +229,6 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   }
     
   this->setStreamType(s.scene.wide_cam ? VISION_STREAM_WIDE_ROAD : VISION_STREAM_ROAD);
-  CameraWidget::updateWideZoom(s.scene.zoom);
 
   if (s.scene.calibration_valid) {
     CameraWidget::updateCalibration(s.scene.view_from_calib);
