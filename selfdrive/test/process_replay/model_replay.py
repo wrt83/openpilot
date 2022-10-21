@@ -76,7 +76,7 @@ def model_replay(lr, frs):
     for msg in lr:
       msgs[msg.which()].append(msg)
 
-    for cam_msgs in zip_longest(msgs['roadCameraState'], msgs['wideRoadCameraState'], msgs['driverCameraState', msgs['lateralPlan']]):
+    for cam_msgs in zip_longest(msgs['roadCameraState'], msgs['wideRoadCameraState'], msgs['driverCameraState'], msgs['lateralPlan']):
       # need a pair of road/wide msgs
       if None in (cam_msgs[0], cam_msgs[1]):
         break
