@@ -111,6 +111,14 @@ void update_model(UIState *s, const cereal::ModelDataV2::Reader &model) {
   }
   max_idx = get_path_length_idx(model_position, max_distance);
   update_line_data(s, model_position, 0.9, 1.22, &scene.track_vertices, max_idx, false);
+
+  // update driver pose
+  float pointp = (*s->sm)["driverMonitoringState"].getDriverMonitoringState().getPosePitchNormalized();
+  pointp = 0.33 * pointp + 0.66 * scene.dm_pp;
+  scene.dm_pp = pointp;
+  float pointy = (*s->sm)["driverMonitoringState"].getDriverMonitoringState().getPoseYawNormalized();
+  pointy = 0.33 * pointy + 0.66 * scene.dm_py;
+  scene.dm_py = pointy;
 }
 
 static void update_sockets(UIState *s) {
