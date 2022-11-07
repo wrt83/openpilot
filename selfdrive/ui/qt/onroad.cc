@@ -230,7 +230,7 @@ void AnnotatedCameraWidget::updateState(const UIState &s) {
   }
 }
 
-void AnnotatedCameraWidget::drawHud(QPainter &p) {
+void AnnotatedCameraWidget::drawHud(QPainter &p, const UIState *s) {
   p.save();
 
   // Header gradient
@@ -503,7 +503,7 @@ void AnnotatedCameraWidget::drawLaneLines(QPainter &painter, const UIState *s) {
   painter.restore();
 }
 
-void NvgWindow::drawDriverState(QPainter &painter, const UIState *s, int x, int y) {
+void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s, int x, int y) {
   painter.save();
 
   const UIScene &scene = s->scene;
@@ -698,7 +698,7 @@ void AnnotatedCameraWidget::paintGL() {
     }
   }
 
-  drawHud(painter);
+  drawHud(painter, s);
 
   double cur_draw_t = millis_since_boot();
   double dt = cur_draw_t - prev_draw_t;
