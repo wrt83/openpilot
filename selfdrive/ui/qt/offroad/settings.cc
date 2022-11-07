@@ -34,6 +34,7 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "Toggle styles of DM icon at standstill",
       "Googly eyes...or not googly eyes?",
       "../assets/offroad/icon_monitoring.png",
+      false,
     },
     {
       "OpenpilotEnabledToggle",
