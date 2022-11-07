@@ -385,9 +385,11 @@ void AnnotatedCameraWidget::drawHud(QPainter &p, const UIState *s) {
 
   // dm icon
   if (!hideDM) {
-    int dm_icon_x = rightHandDM ? rect().right() -  radius / 2 - (bdr_s * 2) : radius / 2 + (bdr_s * 2);
-    drawIcon(p, dm_icon_x, rect().bottom() - footer_h / 2,
-             isStandstill ? dm_img_ss : dm_img, blackColor(70), dmActive ? 1.0 : 0.2);
+    if (!s->scene.use_ge || !isStandstill) {
+      int dm_icon_x = rightHandDM ? rect().right() -  radius / 2 - (bdr_s * 2) : radius / 2 + (bdr_s * 2);
+      drawIcon(p, dm_icon_x, rect().bottom() - footer_h / 2,
+               isStandstill ? dm_img_ss : dm_img, blackColor(70), dmActive ? 1.0 : 0.2);
+    }
     if (isStandstill) {
       drawDriverState(p, s, radius / 2 + (bdr_s * 2), rect().bottom() - footer_h / 2);
     }
@@ -509,7 +511,7 @@ void AnnotatedCameraWidget::drawDriverState(QPainter &painter, const UIState *s,
 
   const UIScene &scene = s->scene;
 
-  if (true) { // false to try googly eyes
+  if (!scene.use_ge) { // false to try googly eyes
     // printf("py, pp = %.2f, %.2f \n", scene.dm_py, scene.dm_pp);
     float real_angle = std::atan2(scene.dm_py, scene.dm_pp);
     float real_amp = std::sqrt(scene.dm_py * scene.dm_py + scene.dm_pp * scene.dm_pp);

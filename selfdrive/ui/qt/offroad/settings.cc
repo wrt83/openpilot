@@ -30,6 +30,12 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon, confirm
   std::vector<std::tuple<QString, QString, QString, QString, bool>> toggle_defs{
     {
+      "GooglyEyes",
+      "Toggle styles of DM icon at standstill",
+      "Googly eyes...or not googly eyes?",
+      "../assets/offroad/icon_monitoring.png",
+    },
+    {
       "OpenpilotEnabledToggle",
       tr("Enable openpilot"),
       tr("Use the openpilot system for adaptive cruise control and lane keep driver assistance. Your attention is required at all times to use this feature. Changing this setting takes effect when the car is powered off."),

@@ -183,6 +183,7 @@ void ui_update_params(UIState *s) {
   s->scene.is_metric = params.getBool("IsMetric");
   s->scene.map_on_left = params.getBool("NavSettingLeftSide");
   s->scene.end_to_end_long = params.getBool("EndToEndLong");
+  s->scene.use_ge = params.getBool("GooglyEyes");
 }
 
 void UIState::updateStatus() {
