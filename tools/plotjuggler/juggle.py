@@ -11,8 +11,8 @@ import requests
 import argparse
 
 from common.basedir import BASEDIR
-from selfdrive.test.process_replay.compare_logs import save_log
 from selfdrive.test.openpilotci import get_url
+from selfdrive.test.process_replay.compare_logs import save_log
 from tools.lib.logreader import LogReader
 from tools.lib.route import Route, SegmentName
 from urllib.parse import urlparse, parse_qs
@@ -83,7 +83,7 @@ def start_juggler(fn=None, dbc=None, layout=None, route_or_segment_name=None):
   subprocess.call(cmd, shell=True, env=env, cwd=juggle_dir)
 
 
-def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=None, ci=False):
+def route_or_segment_to_log_paths(route_or_segment_name, segment_count, qlog, ci):
   segment_start = 0
   if 'cabana' in route_or_segment_name:
     query = parse_qs(urlparse(route_or_segment_name).query)
@@ -116,7 +116,11 @@ def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=No
     else:
       print("Please try a different route or segment")
       return
+  return logs
 
+
+def juggle_route(route_or_segment_name, segment_count, qlog, can, layout, dbc=None, ci=False):
+  logs = route_or_segment_to_log_paths(route_or_segment_name, segment_count, qlog, ci)
   all_data = []
   with multiprocessing.Pool(24) as pool:
     for d in pool.map(load_segment, logs):
