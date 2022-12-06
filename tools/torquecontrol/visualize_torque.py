@@ -34,7 +34,7 @@ def get_data(log_paths):
     'steer_torque': ['carControl/actuatorsOutput/steer', None],
     'yaw_rate': ['liveLocationKalman/angularVelocityCalibrated/value', 2],
     'roll': ['liveLocationKalman/orientationNED/value', 0],
-    'v_ego': ['carState/vEgo', None],
+    'v_ego': ['carState/vEgo', None]
   }
   raw_data = defaultdict(dict)
   for key, [path, index] in fields.items():
@@ -74,8 +74,9 @@ def visualize(processed):
   if np.sum(processed['filters']) > MIN_POINTS:
     slope, offset, friction = tls(processed['steer_input'], processed['lat_accel_output'])
     plt.plot(np.arange(-1, 1, 0.1), np.arange(-1, 1, 0.1) * slope + offset, label="TLS line", c="g")
-    plt.text(-1, 1, f"Estimate of slope for this route/segment ~ {np.round(slope, 2)}")
-    plt.text(-1, 0.8, f"Estimate of friction for this route/segment ~ {np.round(friction, 2)}")
+    plt.text(-1, 1.6, f"Approx. estimate of slope for this route/segment ~ {np.round(slope, 2)}")
+    plt.text(-1, 1.4, f"Approx. estimate of friction for this route/segment ~ {np.round(friction, 2)}")
+    plt.text(-1, -3, "Note: These estimates do not account for actuator lag, which is essential, and used in the live learner")
     plt.legend()
     print(f"\n\nApproximate offline estimates for this route/segment: \nslope: {slope};\noffset: {offset};\nfriction: {friction}")
   else:
