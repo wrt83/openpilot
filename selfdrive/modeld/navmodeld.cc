@@ -24,10 +24,11 @@ void run_model(NavModelState &model, VisionIpcClient &vipc_client) {
 
     double t1 = millis_since_boot();
     NavModelResult *model_res = navmodel_eval_frame(&model, buf);
+    NavModelDenorm *model_denorm = (NavModelDenorm*)&model.denorm;
     double t2 = millis_since_boot();
 
     // send navmodel packet
-    navmodel_publish(pm, extra.frame_id, *model_res, (t2 - t1) / 1000.0);
+    navmodel_publish(pm, extra.frame_id, *model_res, *model_denorm, (t2 - t1) / 1000.0);
 
     //printf("navmodel process: %.2fms, from last %.2fms\n", t2 - t1, t1 - last_ts);
     last_ts = t1;
