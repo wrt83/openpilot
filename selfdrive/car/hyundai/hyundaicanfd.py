@@ -66,7 +66,7 @@ def create_lfahda_cluster(packer, CP, enabled):
 
 
 def create_acc_control(packer, CP, enabled, accel_last, accel, stopping, gas_override, set_speed):
-  jerk = 5
+  jerk = 3 if accel > 0. else 5
   jn = jerk / 50
   if not enabled or gas_override:
     a_val, a_raw = 0, 0
@@ -86,13 +86,18 @@ def create_acc_control(packer, CP, enabled, accel_last, accel, stopping, gas_ove
     "JerkLowerLimit": jerk if enabled else 1,
 
     "ACC_ObjDist": 1,
-    "ObjValid": 0,
-    "OBJ_STATUS": 2,
+    "ObjValid": 1,  # try 0, 1. 0 when valid?
+    "OBJ_STATUS": 5,  # stock system is 5 most of the time, 0 other times
     "SET_ME_2": 0x4,
     "SET_ME_3": 0x3,
     "SET_ME_TMP_64": 0x64,
-    "NEW_SIGNAL_10": 4,
     "DISTANCE_SETTING": 4,
+
+    #"NEW_SIGNAL_3": 4, # not sure, 2 bit signal
+    "ZEROS_9": 24, # lost lead?
+    "NEW_SIGNAL_10": 4,  # near upper jerk. 0-25?
+    "NEW_SIGNAL_4": 1,  # try 0, 1, 2. related to 
+    "NEW_SIGNAL_15": 10.,  # 11 bits
   }
 
   return packer.make_can_msg("SCC_CONTROL", get_e_can_bus(CP), values)
