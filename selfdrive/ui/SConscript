@@ -65,6 +65,10 @@ if GetOption('test'):
   qt_env.Program('tests/test_translations', [asset_obj, 'tests/test_runner.cc', 'tests/test_translations.cc'] + qt_src, LIBS=qt_libs)
 
 
+# build notouch
+qt_env.Program("_notouch", ["notouch.cc"] + [asset_obj], LIBS=qt_libs)
+
+
 # build translation files
 translation_sources = Glob("#selfdrive/ui/translations/*.ts", strings=True)
 translation_targets = [src.replace(".ts", ".qm") for src in translation_sources]

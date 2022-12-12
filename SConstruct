@@ -430,14 +430,17 @@ SConscript(['selfdrive/boardd/SConscript'])
 
 SConscript(['selfdrive/loggerd/SConscript'])
 
+# TODO: fix this
+if arch in ['x86_64', 'Darwin'] or GetOption('extras'):
+  replay_lib = SConscript(['tools/replay/SConscript'])
+  Export('replay_lib')
+
 SConscript(['selfdrive/locationd/SConscript'])
 SConscript(['selfdrive/sensord/SConscript'])
 SConscript(['selfdrive/ui/SConscript'])
 SConscript(['selfdrive/navd/SConscript'])
 
 if arch in ['x86_64', 'Darwin'] or GetOption('extras'):
-  SConscript(['tools/replay/SConscript'])
-
   opendbc = abspath([File('opendbc/can/libdbc.so')])
   Export('opendbc')
   SConscript(['tools/cabana/SConscript'])

@@ -23,3 +23,5 @@ qt_env.Program("replay", ["main.cc"], LIBS=replay_libs, FRAMEWORKS=base_framewor
 
 if GetOption('test'):
   qt_env.Program('tests/test_replay', ['tests/test_runner.cc', 'tests/test_replay.cc'], LIBS=[replay_libs])
+
+Return('replay_lib')
