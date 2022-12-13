@@ -12,6 +12,7 @@
 
 const float DEFAULT_ZOOM = 13.5; // Don't go below 13 or features will start to disappear
 const int HEIGHT = 512, WIDTH = 512;
+const int MAP_OFFSET = 0;
 const int NUM_VIPC_BUFFERS = 4;
 
 const int EARTH_CIRCUMFERENCE_METERS = 40075000;
@@ -181,7 +182,7 @@ void MapRenderer::publish(const double render_time) {
   memset(dst, 128, buf->len);
   for (int r = 0; r < HEIGHT/2; r++) {
     for (int c = 0; c < WIDTH/2; c++) {
-      dst[r*WIDTH/2 + c] = src[((HEIGHT/4 + r)*WIDTH + (c+WIDTH/4)) * 3];
+      dst[r*WIDTH/2 + c] = src[((HEIGHT/4 + MAP_OFFSET + r)*WIDTH + (c+WIDTH/4)) * 3];
     }
   }
 
