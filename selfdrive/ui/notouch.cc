@@ -1,3 +1,5 @@
+#include <sys/resource.h>
+
 #include <QApplication>
 #include <QtWidgets>
 #include <QTimer>
@@ -5,6 +7,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 
+#include "system/hardware/hw.h"
 #include "cereal/messaging/messaging.h"
 #include "selfdrive/ui/ui.h"
 #include "selfdrive/ui/notouch.h"
@@ -35,18 +38,34 @@
 //};
 
 MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
+  setpriority(PRIO_PROCESS, 0, -20);
+
   main_layout = new QVBoxLayout(this);
   main_layout->setMargin(0);
   QLabel* hello = new QLabel("Hello!");
   main_layout->addWidget(hello);
 
-  onroad = new OnroadWindow(this);
+//  onroad = new OnroadWindow(this);
+  onroad = new HomeWindow(this);
+  main_layout->addWidget(onroad);
 
-  QString route_name = MultiOptionDialog::getSelection(tr("Select a route"), routes, "", this);
+  QString route_name;
+  while ((route_name = MultiOptionDialog::getSelection(tr("Select a route"), routes, "", this)).isEmpty()) {
+    qDebug() << "No route selected!";
+  }
   qDebug() << "Selected:" << route_name;
 
   QString data_dir = QString::fromStdString(Path::log_root());
-  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE, data_dir));
+//  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE, data_dir));
+  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE));
+
+  if (replay->load()) {
+//    slider->setRange(0, replay->totalSeconds());
+//    end_time_label->setText(formatTime(replay->totalSeconds()));
+    replay->start();
+//    timer->start();
+  }
+
 
 //
 //  homeWindow = new HomeWindow(this);

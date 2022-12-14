@@ -18,7 +18,7 @@ public:
 private:
   QVBoxLayout *main_layout;
 
-  OnroadWindow *onroad;
+  HomeWindow *onroad;
   std::unique_ptr<Replay> replay;
 
   QStringList routes = {
