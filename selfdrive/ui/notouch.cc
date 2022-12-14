@@ -35,8 +35,10 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
 
     player->setMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
     player->setVolume(0);
-    player->play();
     main_layout->addWidget(videoWidget);
+    while (1) {
+      player->play();
+    }
 
   } else {
     onroad = new OnroadWindow(this);
