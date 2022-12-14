@@ -26,10 +26,7 @@ private:
   QVideoWidget *videoWidget;
 
   QMap<QString, QString> content = {
-    {"Media1 - Media", "d66fbf5597dfbff4|2022-10-10--16-57-23"},
+    {"Media1 - Media", "/data/tacos.mp4"},
     {"Route1 - Route", "d545129f3ca90f28|2022-10-19--09-22-54"},
   };
-//  bool eventFilter(QObject *obj, QEvent *event) override;
-//  void openSettings(int index = 0, const QString &param = "");
-//  void closeSettings();
 };

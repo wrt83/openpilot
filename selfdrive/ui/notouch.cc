@@ -14,37 +14,12 @@
 #include "selfdrive/ui/notouch.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
-//class MainWindowNoTouch : public QWidget {
-//  Q_OBJECT
-//
-//public:
-//  explicit MainWindowNoTouch(QWidget *parent = 0) : QWidget(parent) {
-////    main_layout = new QVBoxLayout(this);
-////    main_layout->setMargin(0);
-//////    QLabel* hello = new QLabel("Hello!");
-//////    main_layout->addWidget(hello);
-//  };
-//
-////private:
-////  bool eventFilter(QObject *obj, QEvent *event) override;
-////  void openSettings(int index = 0, const QString &param = "");
-////  void closeSettings();
-////
-////  Device device;
-////
-////  QVBoxLayout *main_layout;
-////  HomeWindow *homeWindow;
-////  SettingsWindow *settingsWindow;
-////  OnboardingWindow *onboardingWindow;
-//};
 
 MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   setpriority(PRIO_PROCESS, 0, -20);
 
   main_layout = new QVBoxLayout(this);
   main_layout->setMargin(0);
-//  QLabel* hello = new QLabel("Hello!");
-//  main_layout->addWidget(hello);
 
   QString content_name;
   while ((content_name = MultiOptionDialog::getSelection(tr("Select content"), content.keys(), "", this)).isEmpty()) {
@@ -57,9 +32,6 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   qDebug() << "Selected:" << content_name;
 
   if (is_media) {
-    // do
-
-
     player = new QMediaPlayer;
     videoWidget = new QVideoWidget;
     player->setVideoOutput(videoWidget);
@@ -68,15 +40,13 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
     player->setVolume(0);
     player->play();
     main_layout->addWidget(videoWidget);
-//    videoWidget->show();
-
 
   } else {
     onroad = new OnroadWindow(this);
     main_layout->addWidget(onroad);
 
     QString data_dir = QString::fromStdString(Path::log_root());
-    replay.reset(new Replay(content_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_ECAM, data_dir));
+    replay.reset(new Replay(content_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_ECAM));  // , data_dir));
 
     if (replay->load()) {
       qDebug() << "Starting replay!";
