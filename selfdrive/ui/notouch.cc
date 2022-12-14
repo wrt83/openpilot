@@ -24,21 +24,23 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   }
 
   bool is_media = !content_name.contains("Route");
-
   content_name = content[content_name];  // get actual route/file name
   qDebug() << "Selected:" << content_name;
 
   if (is_media) {
+    playlist = new QMediaPlaylist;
+    playlist->addMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
+    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+
     player = new QMediaPlayer;
+    player->setPlaylist(playlist);
+
     videoWidget = new QVideoWidget;
     player->setVideoOutput(videoWidget);
 
-    player->setMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
     player->setVolume(0);
     main_layout->addWidget(videoWidget);
-    while (1) {
-      player->play();
-    }
+    player->play();
 
   } else {
     onroad = new OnroadWindow(this);

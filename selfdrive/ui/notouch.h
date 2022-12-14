@@ -2,6 +2,7 @@
 
 #include <QVBoxLayout>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
 #include <QVideoWidget>
 #include <QWidget>
 
@@ -21,6 +22,7 @@ private:
   OnroadWindow *onroad;
   std::unique_ptr<Replay> replay;
 
+  QMediaPlaylist *playlist;
   QMediaPlayer *player;
   QVideoWidget *videoWidget;
 
