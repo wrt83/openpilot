@@ -59,7 +59,7 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
 
   QString data_dir = QString::fromStdString(Path::log_root());
 //  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE, data_dir));
-  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE));
+  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_ECAM));
 
   if (replay->load()) {
 //    slider->setRange(0, replay->totalSeconds());
