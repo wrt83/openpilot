@@ -59,12 +59,12 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 //  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE, data_dir));
   replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE));
 
-  if (replay->load()) {
-//    slider->setRange(0, replay->totalSeconds());
-//    end_time_label->setText(formatTime(replay->totalSeconds()));
-    replay->start();
-//    timer->start();
-  }
+//  if (replay->load()) {
+////    slider->setRange(0, replay->totalSeconds());
+////    end_time_label->setText(formatTime(replay->totalSeconds()));
+//    replay->start();
+////    timer->start();
+//  }
 
 
 //
@@ -114,15 +114,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 //  QFontDatabase::addApplicationFont("../assets/fonts/Inter-SemiBold.ttf");
 //  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Thin.ttf");
 //  QFontDatabase::addApplicationFont("../assets/fonts/JetBrainsMono-Medium.ttf");
-//
-//  // no outline to prevent the focus rectangle
-//  setStyleSheet(R"(
-//    * {
-//      font-family: Inter;
-//      outline: none;
-//    }
-//  )");
-//  setAttribute(Qt::WA_NoSystemBackground);
+
+  // no outline to prevent the focus rectangle
+  setStyleSheet(R"(
+    * {
+      font-family: Inter;
+      outline: none;
+    }
+  )");
+  setAttribute(Qt::WA_NoSystemBackground);
 }
 
 int main(int argc, char *argv[]) {
