@@ -430,8 +430,8 @@ SConscript(['selfdrive/boardd/SConscript'])
 
 SConscript(['selfdrive/loggerd/SConscript'])
 
-# TODO: fix this
-if arch in ['x86_64', 'Darwin'] or GetOption('extras'):
+# TODO: fix this ordering. rn replay_lib needs to come before ui, and cabana needs to come after ui
+if arch in ['x86_64', 'Darwin'] or GetOption('extras') or True:
   replay_lib = SConscript(['tools/replay/SConscript'])
   Export('replay_lib')
 

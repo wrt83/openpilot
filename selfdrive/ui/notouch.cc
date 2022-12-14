@@ -2,10 +2,7 @@
 
 #include <QApplication>
 #include <QtWidgets>
-#include <QTimer>
 #include <QGraphicsScene>
-#include <QWidget>
-#include <QVBoxLayout>
 
 #include "system/hardware/hw.h"
 #include "cereal/messaging/messaging.h"

@@ -42,7 +42,6 @@ HomeWindow::HomeWindow(QWidget* parent) : QWidget(parent) {
   QObject::connect(uiState(), &UIState::uiUpdate, this, &HomeWindow::updateState);
   QObject::connect(uiState(), &UIState::offroadTransition, this, &HomeWindow::offroadTransition);
   QObject::connect(uiState(), &UIState::offroadTransition, sidebar, &Sidebar::offroadTransition);
-  qDebug() << "done";
 }
 
 void HomeWindow::showSidebar(bool show) {
@@ -50,7 +49,6 @@ void HomeWindow::showSidebar(bool show) {
 }
 
 void HomeWindow::updateState(const UIState &s) {
-  qDebug() << "running?";
   const SubMaster &sm = *(s.sm);
 
   // switch to the generic robot UI

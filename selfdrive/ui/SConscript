@@ -67,7 +67,6 @@ if GetOption('test'):
 
 # build notouch
 replay_libs = [replay_lib, 'avutil', 'avcodec', 'avformat', 'bz2', 'curl', 'yuv', 'ncurses']
-qt_src.remove("qt/window.cc")
 qt_env.Program("_notouch", ["notouch.cc"] + [asset_obj] + qt_src, LIBS=replay_libs + qt_libs)
 
 

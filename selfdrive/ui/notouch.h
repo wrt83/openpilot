@@ -6,7 +6,6 @@
 #include <QWidget>
 
 #include "selfdrive/ui/qt/onroad.h"
-#include "selfdrive/ui/qt/offroad/onboarding.h"
 #include "selfdrive/ui/qt/offroad/settings.h"
 #include "tools/replay/replay.h"
 
