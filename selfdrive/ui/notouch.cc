@@ -46,77 +46,43 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
 //  QLabel* hello = new QLabel("Hello!");
 //  main_layout->addWidget(hello);
 
-  onroad = new OnroadWindow(this);
-//  onroad = new HomeWindow(this);
-  main_layout->addWidget(onroad);
-
-  QString route_name;
-  while ((route_name = MultiOptionDialog::getSelection(tr("Select a route"), routes.keys(), "", this)).isEmpty()) {
-    qDebug() << "No route selected!";
-  }
-  route_name = routes[route_name];  // get actual route name
-  qDebug() << "Selected:" << route_name;
-
-  QString data_dir = QString::fromStdString(Path::log_root());
-//  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_NONE, data_dir));
-  replay.reset(new Replay(route_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_ECAM));
-
-  if (replay->load()) {
-//    slider->setRange(0, replay->totalSeconds());
-//    end_time_label->setText(formatTime(replay->totalSeconds()));
-    qDebug() << "Starting replay!";
-    replay->start();
-//    timer->start();
+  QString content_name;
+  while ((content_name = MultiOptionDialog::getSelection(tr("Select content"), content.keys(), "", this)).isEmpty()) {
+    qDebug() << "No content selected!";
   }
 
+  bool is_media = !content_name.contains("Route");
 
-//
-//  homeWindow = new HomeWindow(this);
-//  main_layout->addWidget(homeWindow);
-//  QObject::connect(homeWindow, &HomeWindow::openSettings, this, &MainWindowNoTouch::openSettings);
-//  QObject::connect(homeWindow, &HomeWindow::closeSettings, this, &MainWindowNoTouch::closeSettings);
-//
-//  settingsWindow = new SettingsWindow(this);
-//  main_layout->addWidget(settingsWindow);
-//  QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindowNoTouch::closeSettings);
-//  QObject::connect(settingsWindow, &SettingsWindow::reviewTrainingGuide, [=]() {
-//    onboardingWindow->showTrainingGuide();
-//    main_layout->setCurrentWidget(onboardingWindow);
-//  });
-//  QObject::connect(settingsWindow, &SettingsWindow::showDriverView, [=] {
-//    homeWindow->showDriverView(true);
-//  });
-//
-//  onboardingWindow = new OnboardingWindow(this);
-//  main_layout->addWidget(onboardingWindow);
-//  QObject::connect(onboardingWindow, &OnboardingWindow::onboardingDone, [=]() {
-//    main_layout->setCurrentWidget(homeWindow);
-//  });
-//  if (!onboardingWindow->completed()) {
-//    main_layout->setCurrentWidget(onboardingWindow);
-//  }
-//
-//  QObject::connect(uiState(), &UIState::offroadTransition, [=](bool offroad) {
-//    if (!offroad) {
-//      closeSettings();
-//    }
-//  });
-//  QObject::connect(&device, &Device::interactiveTimout, [=]() {
-//    if (main_layout->currentWidget() == settingsWindow) {
-//      closeSettings();
-//    }
-//  });
-//
-//  // load fonts
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Black.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Bold.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-ExtraBold.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-ExtraLight.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Medium.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Regular.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-SemiBold.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/Inter-Thin.ttf");
-//  QFontDatabase::addApplicationFont("../assets/fonts/JetBrainsMono-Medium.ttf");
+  content_name = content[content_name];  // get actual route/file name
+  qDebug() << "Selected:" << content_name;
+
+  if (is_media) {
+    // do
+
+
+    player = new QMediaPlayer;
+    videoWidget = new QVideoWidget;
+    player->setVideoOutput(videoWidget);
+
+    player->setMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
+    player->setVolume(0);
+    player->play();
+    main_layout->addWidget(videoWidget);
+//    videoWidget->show();
+
+
+  } else {
+    onroad = new OnroadWindow(this);
+    main_layout->addWidget(onroad);
+
+    QString data_dir = QString::fromStdString(Path::log_root());
+    replay.reset(new Replay(content_name, {}, {}, uiState()->sm.get(), REPLAY_FLAG_ECAM, data_dir));
+
+    if (replay->load()) {
+      qDebug() << "Starting replay!";
+      replay->start();
+    }
+  }
 
   // no outline to prevent the focus rectangle
   setStyleSheet(R"(
@@ -131,60 +97,8 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
 int main(int argc, char *argv[]) {
   initApp(argc, argv);
   QApplication a(argc, argv);
-//  QWidget w;
   MainWindowNoTouch w;
   setMainWindow(&w);
-
-//  w.setStyleSheet("background-color: black;");
-//
-//  // our beautiful UI
-//  QVBoxLayout *layout = new QVBoxLayout(&w);
-//
-//  QGraphicsScene *scene = new QGraphicsScene();
-//  StatusBar *status_bar = new StatusBar(0, 0, 1000, 50);
-//  scene->addItem(status_bar);
-//
-//  QGraphicsView *graphics_view = new QGraphicsView(scene);
-//  layout->insertSpacing(0, 400);
-//  layout->addWidget(graphics_view, 0, Qt::AlignCenter);
-//
-//  QTimer timer;
-//  QObject::connect(&timer, &QTimer::timeout, [=]() {
-//    static SubMaster sm({"deviceState", "controlsState", "lateralPlan"});
-//
-//    bool onroad_prev = sm.allAliveAndValid({"deviceState"}) &&
-//                       sm["deviceState"].getDeviceState().getStarted();
-//    sm.update(0);
-//
-//    bool onroad = sm.allAliveAndValid({"deviceState"}) &&
-//                  sm["deviceState"].getDeviceState().getStarted();
-//
-//    if (onroad) {
-//      auto cs = sm["controlsState"].getControlsState();
-//      UIStatus status = cs.getEnabled() ? STATUS_ENGAGED : STATUS_DISENGAGED;
-//      if (cs.getAlertStatus() == cereal::ControlsState::AlertStatus::USER_PROMPT) {
-//        status = STATUS_WARNING;
-//      } else if (cs.getAlertStatus() == cereal::ControlsState::AlertStatus::CRITICAL) {
-//        status = STATUS_ALERT;
-//      }
-//
-//      auto lp = sm["lateralPlan"].getLateralPlan();
-//      if (lp.getLaneChangeState() == cereal::LateralPlan::LaneChangeState::PRE_LANE_CHANGE || status == STATUS_ALERT) {
-//        status_bar->blinkingColor(bg_colors[status]);
-//      } else if (lp.getLaneChangeState() == cereal::LateralPlan::LaneChangeState::LANE_CHANGE_STARTING ||
-//                 lp.getLaneChangeState() == cereal::LateralPlan::LaneChangeState::LANE_CHANGE_FINISHING) {
-//        status_bar->laneChange(lp.getLaneChangeDirection());
-//      } else {
-//        status_bar->solidColor(bg_colors[status]);
-//      }
-//    }
-//
-//    if ((onroad != onroad_prev) || sm.frame < 2) {
-//      Hardware::set_brightness(50);
-//      Hardware::set_display_power(onroad);
-//    }
-//  });
-//  timer.start(50);
 
   return a.exec();
 }

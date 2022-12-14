@@ -1,9 +1,10 @@
 #pragma once
 
-#include <QStackedLayout>
+#include <QVBoxLayout>
+#include <QMediaPlayer>
+#include <QVideoWidget>
 #include <QWidget>
 
-#include "selfdrive/ui/qt/home.h"
 #include "selfdrive/ui/qt/onroad.h"
 #include "selfdrive/ui/qt/offroad/onboarding.h"
 #include "selfdrive/ui/qt/offroad/settings.h"
@@ -19,12 +20,14 @@ private:
   QVBoxLayout *main_layout;
 
   OnroadWindow *onroad;
-//  HomeWindow *onroad;
   std::unique_ptr<Replay> replay;
 
-  QMap<QString, QString> routes = {
-    {"Route1", "d66fbf5597dfbff4|2022-10-10--16-57-23"},
-    {"Route2", "d545129f3ca90f28|2022-10-19--09-22-54"},
+  QMediaPlayer *player;
+  QVideoWidget *videoWidget;
+
+  QMap<QString, QString> content = {
+    {"Media1 - Media", "d66fbf5597dfbff4|2022-10-10--16-57-23"},
+    {"Route1 - Route", "d545129f3ca90f28|2022-10-19--09-22-54"},
   };
 //  bool eventFilter(QObject *obj, QEvent *event) override;
 //  void openSettings(int index = 0, const QString &param = "");
