@@ -21,9 +21,9 @@ sudo apt-get install -y --no-install-recommends gstreamer1.0-tools gstreamer1.0-
 kill -9 $spinner_pid
 
 # convert videos to mpeg4
-echo "Downloading and converting videos" | ./selfdrive/ui/spinner &
+echo "Downloading videos" | ./selfdrive/ui/spinner &
 spinner_pid=$!
-./selfdrive/assets/videos/convert-videos.sh
+./selfdrive/assets/videos/download-videos.sh
 kill -9 $spinner_pid
 
 # launch notouch ui
