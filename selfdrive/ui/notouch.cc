@@ -28,19 +28,21 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   qDebug() << "Selected:" << content_name;
 
   if (is_media) {
-    playlist = new QMediaPlaylist;
-    playlist->addMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+    std::system("gst-launch-1.0 videotestsrc ! glupload ! glimagesinkelement");
 
-    player = new QMediaPlayer;
-    player->setPlaylist(playlist);
-
-    videoWidget = new QVideoWidget;
-    player->setVideoOutput(videoWidget);
-
-    player->setVolume(0);
-    main_layout->addWidget(videoWidget);
-    player->play();
+//    playlist = new QMediaPlaylist;
+//    playlist->addMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
+//    playlist->setPlaybackMode(QMediaPlaylist::Loop);
+//
+//    player = new QMediaPlayer;
+//    player->setPlaylist(playlist);
+//
+//    videoWidget = new QVideoWidget;
+//    player->setVideoOutput(videoWidget);
+//
+//    player->setVolume(0);
+//    main_layout->addWidget(videoWidget);
+//    player->play();
 
   } else {
     onroad = new OnroadWindow(this);
