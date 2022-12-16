@@ -27,7 +27,7 @@ private:
   QVideoWidget *videoWidget;
 
   QMap<QString, QString> content = {
-    {"Media1 - Media", "/data/tacos.mp4"},
+    {"Media1 - Media", "../../../tacos.mp4"},
     {"Route1 - Route", "d545129f3ca90f28|2022-12-13--22-57-16"},
   };
 };
