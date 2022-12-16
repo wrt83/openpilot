@@ -108,7 +108,7 @@ void MapWindow::initLayers() {
     marker["type"] = "symbol";
     marker["source"] = "markerSource";
     m_map->addLayer(marker);
-    m_map->setLayoutProperty("markerLayer", "icon-pitch-alignment", "map");
+    m_map->setLayoutProperty("markerLayer", "icon-pitch-alignment", "viewport");
     m_map->setLayoutProperty("markerLayer", "icon-image", "label-marker");
     m_map->setLayoutProperty("markerLayer", "icon-size", 1.0);
     m_map->setLayoutProperty("markerLayer", "icon-ignore-placement", true);
