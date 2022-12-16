@@ -1,9 +1,6 @@
 #pragma once
 
 #include <QVBoxLayout>
-#include <QMediaPlayer>
-#include <QMediaPlaylist>
-#include <QVideoWidget>
 #include <QWidget>
 
 #include "selfdrive/ui/qt/onroad.h"
