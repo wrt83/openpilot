@@ -11,11 +11,12 @@
 #include "selfdrive/ui/notouch.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
-const QString GST_VIDEO_CMD = QString("while true; do gst-launch-1.0 -v filesrc location=\"%1\" ! decodebin ! videoconvert ! queue2 ! videoflip method=clockwise ! queue2 ! videoscale ! queue2 ! video/x-raw,height=2160,width=1080 ! autovideosink; done");
+// TODO: remove sync=false
+const QString GST_VIDEO_CMD = QString("while true; do gst-launch-1.0 -v filesrc location=\"%1\" ! decodebin ! videoconvert ! queue2 ! videoflip method=clockwise ! queue2 ! autovideosink sync=false; done");
 
 
 MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
-  setpriority(PRIO_PROCESS, 0, -20);
+  setpriority(PRIO_PROCESS, 0, -5);
 
   main_layout = new QVBoxLayout(this);
   main_layout->setMargin(0);
@@ -30,22 +31,7 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   qDebug() << "Selected:" << content_name;
 
   if (is_media) {
-//    std::system(QString("while true; do %1; done").arg(GST_VIDEO_CMD.arg(content_name)).toStdString().c_str());
-
-    playlist = new QMediaPlaylist;
-    playlist->addMedia(QUrl::fromLocalFile("../../../tacos.mp4"));
-    playlist->setPlaybackMode(QMediaPlaylist::Loop);
-
-    player = new QMediaPlayer;
-    player->setPlaylist(playlist);
-
-    videoWidget = new QVideoWidget;
-    player->setVideoOutput(videoWidget);
-
-    player->setVolume(0);
-    main_layout->addWidget(videoWidget);
-    player->play();
-
+    std::system(QString("while true; do %1; done").arg(GST_VIDEO_CMD.arg(content_name)).toStdString().c_str());
   } else {
     onroad = new OnroadWindow(this);
     main_layout->addWidget(onroad);

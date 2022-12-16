@@ -22,12 +22,10 @@ private:
   OnroadWindow *onroad;
   std::unique_ptr<Replay> replay;
 
-  QMediaPlaylist *playlist;
-  QMediaPlayer *player;
-  QVideoWidget *videoWidget;
-
   QMap<QString, QString> content = {
-    {"Media1 - Media", "../../../tacos.mp4"},
-    {"Route1 - Route", "d545129f3ca90f28|2022-12-13--22-57-16"},
+    {"TB - Media", "../../../tacos.mp4"},
+    {"three B-roll - Media", "../assets/videos/out/three-rotating.mp4"},
+    {"website home B-roll - Media", "../assets/videos/out/website-home-video.mp4"},
+//    {"Route1 - Route", "d545129f3ca90f28|2022-12-13--22-57-16"},
   };
 };

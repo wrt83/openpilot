@@ -1,15 +1,32 @@
 #!/usr/bin/bash
+set -e
 
+# launch spinner
+echo "Building" | ./selfdrive/ui/spinner &
+spinner_pid=$!
 
-## install deps
-#sudo mount -o rw,remount /
-#sudo apt update
-#sudo apt install -y apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
-#
-#git submodule update --init --recurse-submodules
-#scons -j8
+# build
+scons selfdrive/ui/_notouch selfdrive/ui/_ui -j8 --extras
+kill -9 $spinner_pid
 
+# launch ui and let user set up ssh
+./selfdrive/ui/ui || true
 
-export PASSIVE="0"
-exec ./launch_chffrplus.sh
+echo "Installing dependencies" | ./selfdrive/ui/spinner &
+spinner_pid=$!
 
+# install deps
+sudo mount -o rw,remount /
+sudo apt update
+sudo apt-get install -y --no-install-recommends gstreamer1.0-tools gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad || true
+sudo mount -o ro,remount / || true
+kill -9 $spinner_pid
+
+# convert videos to mpeg4
+echo "Downloading and converting videos" | ./selfdrive/ui/spinner &
+spinner_pid=$!
+./selfdrive/assets/videos/convert-videos.sh
+kill -9 $spinner_pid
+
+# launch notouch ui
+./selfdrive/ui/notouch
