@@ -16,10 +16,8 @@ echo "Installing dependencies" | ./selfdrive/ui/spinner &
 spinner_pid=$!
 
 # install deps
-sudo mount -o rw,remount /
 sudo apt update
 sudo apt-get install -y --no-install-recommends gstreamer1.0-tools gstreamer1.0-libav gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad || true
-sudo mount -o ro,remount / || true
 kill -9 $spinner_pid
 
 # convert videos to mpeg4
