@@ -1,6 +1,9 @@
 #!/usr/bin/bash
 set -e
 
+# wait for weston to come up
+sleep 5
+
 # launch spinner
 echo "Building" | ./selfdrive/ui/spinner &
 spinner_pid=$!
