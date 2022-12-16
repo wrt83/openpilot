@@ -99,6 +99,22 @@ void MapWindow::initLayers() {
     m_map->setLayoutProperty("carPosLayer", "icon-allow-overlap", true);
     m_map->setLayoutProperty("carPosLayer", "symbol-sort-key", 0);
   }
+  if (!m_map->layerExists("markerLayer")) {
+    qDebug() << "Initializing markerLayer";
+    m_map->addImage("label-marker", QImage("../assets/images/triangle.svg"));
+
+    QVariantMap marker;
+    marker["id"] = "markerLayer";
+    marker["type"] = "symbol";
+    marker["source"] = "markerSource";
+    m_map->addLayer(marker);
+    m_map->setLayoutProperty("markerLayer", "icon-pitch-alignment", "map");
+    m_map->setLayoutProperty("markerLayer", "icon-image", "label-marker");
+    m_map->setLayoutProperty("markerLayer", "icon-size", 1.0);
+    m_map->setLayoutProperty("markerLayer", "icon-ignore-placement", true);
+    m_map->setLayoutProperty("markerLayer", "icon-allow-overlap", true);
+    m_map->setLayoutProperty("markerLayer", "symbol-sort-key", 0);
+  }
 }
 
 void MapWindow::updateState(const UIState &s) {
@@ -237,6 +253,13 @@ void MapWindow::updateState(const UIState &s) {
     m_map->setLayoutProperty("navLayer", "visibility", "visible");
 
     route_rcv_frame = sm.rcv_frame("navRoute");
+
+    auto dest_point = coordinate_to_collection(route_points[0][0][route_points[0][0].length() - 1]);
+    QMapbox::Feature feature2(QMapbox::Feature::PointType, dest_point, {}, {});
+    QVariantMap markerSource;
+    markerSource["type"] = "geojson";
+    markerSource["data"] = QVariant::fromValue<QMapbox::Feature>(feature2);
+    m_map->updateSource("markerSource", markerSource);
   }
 }
 
