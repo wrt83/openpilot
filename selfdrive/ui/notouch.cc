@@ -28,8 +28,7 @@ MainWindowNoTouch::MainWindowNoTouch(QWidget *parent) : QWidget(parent) {
   qDebug() << "Selected:" << content_name;
 
   if (is_media) {
-//    std::system("gst-launch-1.0 videotestsrc ! glupload ! glimagesinkelement");
-    std::system(QString("gst-launch-1.0 playbin uri=file://%1 video-sink=\"videoconvert ! videoflip method=clockwise ! waylandsink\"").arg(content_name).toStdString().c_str());
+    std::system(QString("gst-launch-1.0 playbin uri=file://%1 loop=true video-sink=\"videoconvert ! videoflip method=clockwise ! waylandsink\"").arg(content_name).toStdString().c_str());
 
 //    playlist = new QMediaPlaylist;
 //    playlist->addMedia(QUrl::fromLocalFile("/home/batman/Downloads/tacos.mp4"));
