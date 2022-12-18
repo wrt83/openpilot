@@ -11,7 +11,7 @@
 #include "selfdrive/ui/qt/maps/map_helpers.h"
 
 const float DEFAULT_ZOOM = 13.5; // Don't go below 13 or features will start to disappear
-const int HEIGHT = 512, WIDTH = 512;
+const int HEIGHT = 480, WIDTH = 768;
 const int NUM_VIPC_BUFFERS = 4;
 
 const int EARTH_CIRCUMFERENCE_METERS = 40075000;
@@ -52,7 +52,8 @@ MapRenderer::MapRenderer(const QMapboxGLSettings &settings, bool online) : m_set
   std::string style = util::read_file(STYLE_PATH);
   m_map.reset(new QMapboxGL(nullptr, m_settings, fbo->size(), 1));
   m_map->setCoordinateZoom(QMapbox::Coordinate(0, 0), DEFAULT_ZOOM);
-  m_map->setStyleJson(style.c_str());
+  //m_map->setStyleJson(style.c_str());
+  m_map->setStyleUrl("mapbox://styles/commaai/ckr64tlwp0azb17nqvr9fj13s");
   m_map->createRenderer();
 
   m_map->resize(fbo->size());
@@ -81,6 +82,8 @@ MapRenderer::MapRenderer(const QMapboxGLSettings &settings, bool online) : m_set
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(msgUpdate()));
     timer->start(0);
   }
+
+
 }
 
 void MapRenderer::msgUpdate() {
@@ -116,7 +119,7 @@ void MapRenderer::msgUpdate() {
     for (auto const &c : coords) {
       route.push_back(QGeoCoordinate(c.getLatitude(), c.getLongitude()));
     }
-    updateRoute(route);
+    //updateRoute(route);
   }
 
   // schedule next update
@@ -129,12 +132,32 @@ void MapRenderer::updatePosition(QMapbox::Coordinate position, float bearing) {
   }
 
   // Choose a scale that ensures above 13 zoom level up to and above 75deg of lat
-  float meters_per_pixel = 2;
-  float zoom = get_zoom_level_for_scale(position.first, meters_per_pixel);
+  //float meters_per_pixel = 2;
+  //float zoom = get_zoom_level_for_scale(position.first, meters_per_pixel);
+  float zoom = 15;
+
+  {
+    auto point = coordinate_to_collection(position);
+    QMapbox::Feature feature1(QMapbox::Feature::PointType, point, {}, {});
+    QVariantMap carPosSource;
+    carPosSource["type"] = "geojson";
+    carPosSource["data"] = QVariant::fromValue<QMapbox::Feature>(feature1);
+    m_map->updateSource("carPosSource", carPosSource);
+  }
+
+  {
+    auto point = coordinate_to_collection({32.71164623532384, -117.12565153097248});
+    QMapbox::Feature feature1(QMapbox::Feature::PointType, point, {}, {});
+    QVariantMap carPosSource;
+    carPosSource["type"] = "geojson";
+    carPosSource["data"] = QVariant::fromValue<QMapbox::Feature>(feature1);
+    m_map->updateSource("markerSource", carPosSource);
+  }
 
   m_map->setCoordinate(position);
   m_map->setBearing(bearing);
   m_map->setZoom(zoom);
+  m_map->setPitch(10);
   update();
 }
 
@@ -217,19 +240,25 @@ void MapRenderer::publish(const double render_time) {
 uint8_t* MapRenderer::getImage() {
   QImage cap = fbo->toImage().convertToFormat(QImage::Format_RGB888, Qt::AutoColor);
 
-  uint8_t* src = cap.bits();
-  uint8_t* dst = new uint8_t[WIDTH * HEIGHT];
+  assert(cap.height() == HEIGHT);
+  assert(cap.width() == WIDTH);
+  assert(cap.sizeInBytes() == (WIDTH*HEIGHT*3));
 
-  // RGB to greyscale
-  for (int i = 0; i < WIDTH * HEIGHT; i++) {
-    dst[i] = src[i * 3];
+  uint8_t* src = cap.bits();
+  uint8_t* dst = new uint8_t[WIDTH * HEIGHT * 3];
+
+  //printf("%d, %d, %d %d\n", src[1], src[100], src[200], WIDTH*HEIGHT*3);
+  for (int i = 0; i < WIDTH*HEIGHT*3; i++) {
+    dst[i] = src[i];
   }
+  //memset(dst, 5, WIDTH*HEIGHT*3);
+  //memcpy(dst, src, WIDTH*HEIGHT*3);
 
   return dst;
 }
 
 void MapRenderer::updateRoute(QList<QGeoCoordinate> coordinates) {
-  if (m_map.isNull()) return;
+  assert(!m_map.isNull());
   initLayers();
 
   auto route_points = coordinate_list_to_collection(coordinates);
@@ -239,6 +268,8 @@ void MapRenderer::updateRoute(QList<QGeoCoordinate> coordinates) {
   navSource["data"] = QVariant::fromValue<QMapbox::Feature>(feature);
   m_map->updateSource("navSource", navSource);
   m_map->setLayoutProperty("navLayer", "visibility", "visible");
+  m_map->setLayoutProperty("markerLayer", "visibility", "visible");
+  m_map->setLayoutProperty("carPosLayer", "visibility", "visible");
 }
 
 void MapRenderer::initLayers() {
@@ -248,9 +279,43 @@ void MapRenderer::initLayers() {
     nav["type"] = "line";
     nav["source"] = "navSource";
     m_map->addLayer(nav, "road-intersection");
-    m_map->setPaintProperty("navLayer", "line-color", QColor("grey"));
-    m_map->setPaintProperty("navLayer", "line-width", 5);
+    m_map->setPaintProperty("navLayer", "line-color", QColor("#31a1ee"));
+    m_map->setPaintProperty("navLayer", "line-width", 9);
     m_map->setLayoutProperty("navLayer", "line-cap", "round");
+  }
+
+  if (!m_map->layerExists("markerLayer")) {
+    //qDebug() << "Initializing markerLayer";
+    m_map->addImage("label-marker", QImage("/home/batman/Downloads/pin.svg"));
+
+    QVariantMap marker;
+    marker["id"] = "markerLayer";
+    marker["type"] = "symbol";
+    marker["source"] = "markerSource";
+    m_map->addLayer(marker);
+    m_map->setLayoutProperty("markerLayer", "icon-pitch-alignment", "map");
+    m_map->setLayoutProperty("markerLayer", "icon-image", "label-marker");
+    m_map->setLayoutProperty("markerLayer", "icon-size", 2.5);
+    m_map->setLayoutProperty("markerLayer", "icon-ignore-placement", true);
+    m_map->setLayoutProperty("markerLayer", "icon-allow-overlap", true);
+    m_map->setLayoutProperty("markerLayer", "symbol-sort-key", 0);
+  }
+
+  if (!m_map->layerExists("carPosLayer")) {
+    //qDebug() << "Initializing carPosLayer";
+    m_map->addImage("label-arrow", QImage("/home/batman/openpilot/selfdrive/assets/images/triangle.svg"));
+
+    QVariantMap carPos;
+    carPos["id"] = "carPosLayer";
+    carPos["type"] = "symbol";
+    carPos["source"] = "carPosSource";
+    m_map->addLayer(carPos);
+    m_map->setLayoutProperty("carPosLayer", "icon-pitch-alignment", "map");
+    m_map->setLayoutProperty("carPosLayer", "icon-image", "label-arrow");
+    m_map->setLayoutProperty("carPosLayer", "icon-size", 0.7);
+    m_map->setLayoutProperty("carPosLayer", "icon-ignore-placement", true);
+    m_map->setLayoutProperty("carPosLayer", "icon-allow-overlap", true);
+    m_map->setLayoutProperty("carPosLayer", "symbol-sort-key", 0);
   }
 }
 
