@@ -119,9 +119,12 @@ class LongControl:
       # Toyota starts braking more when it thinks you want to stop
       # Freeze the integrator so we don't accelerate to compensate, and don't allow positive acceleration
       # TODO too complex, needs to be simplified and tested on toyotas
-      prevent_overshoot = not self.CP.stoppingControl and CS.vEgo < 5 and a_target < -0.25 and v_target_1sec < self.v_pid
+      prevent_overshoot = not self.CP.stoppingControl and CS.vEgo < 3. and v_target_1sec < 2.2 and v_target_1sec < self.v_pid
       deadzone = interp(CS.vEgo, self.CP.longitudinalTuning.deadzoneBP, self.CP.longitudinalTuning.deadzoneV)
       freeze_integrator = prevent_overshoot
+      if prevent_overshoot:
+        CP_stoppingAccel = -0.4  # bit different than stopAccel. this is the min deceleration to request while stopping to not release brakes
+        a_target = min(a_target, CP_stoppingAccel)
 
       error = self.v_pid - CS.vEgo
       error_deadzone = apply_deadzone(error, deadzone)
