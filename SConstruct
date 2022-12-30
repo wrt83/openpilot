@@ -195,7 +195,7 @@ env = Environment(
     "#third_party/acados/include/hpipm/include",
     "#third_party/catch2/include",
     "#third_party/libyuv/include",
-    "#third_party/json11",
+    "#third_party/rapidjson/include",
     "#third_party/curl/include",
     "#third_party/libgralloc/include",
     "#third_party/android_frameworks_native/include",
@@ -351,7 +351,7 @@ Import('_common', '_gpucommon')
 if SHARED:
   common, gpucommon = abspath(common), abspath(gpucommon)
 else:
-  common = [_common, 'json11']
+  common = [_common]
   gpucommon = [_gpucommon]
 
 Export('common', 'gpucommon')
