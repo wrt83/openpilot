@@ -37,9 +37,6 @@ LANE_DEPARTURE_THRESHOLD = 0.1
 REPLAY = "REPLAY" in os.environ
 SIMULATION = "SIMULATION" in os.environ
 NOSENSOR = "NOSENSOR" in os.environ
-IGNORE_PROCESSES = {"uploader", "deleter", "loggerd", "logmessaged", "tombstoned", "statsd",
-                    "logcatd", "proclogd", "clocksd", "updated", "timezoned", "manage_athenad", "laikad"} | \
-                   {k for k, v in managed_processes.items() if not v.enabled}
 
 ThermalStatus = log.DeviceState.ThermalStatus
 State = log.ControlsState.OpenpilotState
@@ -329,7 +326,7 @@ class Controls:
     num_events = len(self.events)
 
     not_running = {p.name for p in self.sm['managerState'].processes if not p.running and p.shouldBeRunning}
-    if self.sm.rcv_frame['managerState'] and (not_running - IGNORE_PROCESSES):
+    if self.sm.rcv_frame['managerState'] and len(not_running) > 0:
       self.events.add(EventName.processNotRunning)
     else:
       if not SIMULATION and not self.rk.lagging:
