@@ -20,12 +20,15 @@ MAX_USER_TORQUE = 500
 
 
 def compute_gb_toyota(accel, speed):
-  creep_brake = 0.0
   creep_speed = 2.3
   creep_brake_value = 0.15
-  if speed < creep_speed:
-    creep_brake = (creep_speed - speed) / creep_speed * creep_brake_value
+  creep_gas_multiplier = 1.5
+  creep_gas = interp(speed, [0, creep_speed], [creep_gas_multiplier, 1.0])
+  creep_brake = interp(speed, [0, creep_speed], [creep_brake_value, 0])
+
   gb = float(accel) - creep_brake
+  if gb > 0:
+    gb *= creep_gas
   return gb
 
 
