@@ -6,6 +6,9 @@ if [ -z "$BASEDIR" ]; then
   BASEDIR="/data/openpilot"
 fi
 
+ln -sfn $(pwd) /data/pythonpath
+export PYTHONPATH="$PWD"
+
 # launch spinner
 echo "Building" | ./selfdrive/ui/spinner &
 spinner_pid=$!
