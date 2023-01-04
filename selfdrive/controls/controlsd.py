@@ -90,7 +90,7 @@ class Controls:
         ignore += ['roadCameraState']
       self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                      'driverMonitoringState', 'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
-                                     'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters', 'testJoystick'] + self.camera_packets,
+                                     'managerState', 'liveParameters', 'radarState', 'liveTorqueParameters', 'testJoystick', 'navInstruction'] + self.camera_packets,
                                     ignore_alive=ignore, ignore_avg_freq=['radarState', 'longitudinalPlan', 'testJoystick'])
 
     if CI is None:
@@ -351,8 +351,9 @@ class Controls:
     # generic catch-all. ideally, a more specific event should be added above instead
     has_disable_events = self.events.any(ET.NO_ENTRY) and (self.events.any(ET.SOFT_DISABLE) or self.events.any(ET.IMMEDIATE_DISABLE))
     no_system_errors = (not has_disable_events) or (len(self.events) == num_events)
-    if (not self.sm.all_checks() or self.can_rcv_timeout) and no_system_errors:
-      if not self.sm.all_alive():
+    checked_socks = [s for s in self.sm.alive.keys() if s != 'navInstruction']
+    if (not self.sm.all_checks(checked_socks) or self.can_rcv_timeout) and no_system_errors:
+      if not self.sm.all_alive(checked_socks):
         self.events.add(EventName.commIssue)
       elif not self.sm.all_freq_ok():
         self.events.add(EventName.commIssueAvgFreq)
@@ -577,10 +578,15 @@ class Controls:
     actuators = CC.actuators
     actuators.longControlState = self.LoC.long_control_state
 
-    # Enable blinkers while lane changing
-    if self.sm['lateralPlan'].laneChangeState != LaneChangeState.off:
-      CC.leftBlinker = self.sm['lateralPlan'].laneChangeDirection == LaneChangeDirection.left
-      CC.rightBlinker = self.sm['lateralPlan'].laneChangeDirection == LaneChangeDirection.right
+    # Enable blinkers while turning
+    nav = self.sm['navInstruction']
+    blinkers_allowed = self.enabled and self.sm.all_checks(['navInstruction'])
+    close_to_turn = (nav.maneuverDistance < 0.04*1609) or ((nav.maneuverDistance / (CS.vEgo+0.01)) < 5)
+    if blinkers_allowed and nav.maneuverType == 'turn' and close_to_turn:
+      if nav.maneuverModifier == 'right':
+        CC.rightBlinker = True
+      elif nav.maneuverModifier == 'left':
+        CC.leftBlinker = True
 
     if CS.leftBlinker or CS.rightBlinker:
       self.last_blinker_frame = self.sm.frame
